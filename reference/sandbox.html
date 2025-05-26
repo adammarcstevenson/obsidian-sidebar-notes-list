@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticky Scroll</title>
+  <style>
+    body {
+      display: flex;
+      font-family: sans-serif;
+      padding: 50px 30px;
+      background-color: transparent;
+    }
+    .list {
+      height: 600px;
+      width: 200px;
+      border: solid 3px gray;
+      overflow: auto;
+    }
+    .header {
+      position: sticky;
+      background-color: burlywood;
+      border-bottom: 2px solid brown;
+    }
+    .row {
+      background-color: aquamarine;
+      transition: transform 1.0s ease;
+      cursor: pointer;
+    }
+    .row.selected {
+      background-color: pink;
+    }
+    .header, .row {
+      padding: 7px;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+    }
+    .controls > button {
+      margin: 20px 20px;
+      padding: 0.5em;
+    }
+  </style>
+</head>
+<body>
+  <div class="list"></div>
+  <div class="controls">
+    <button onclick="reorderRowsRandomly()">Reorder rows randomly</button>
+    <button onclick="initList()">Reset list</button>
+  </div>
+</body>
+<script>
+  const list = document.querySelector('.list')
+  let selectedRow
+  const initList = () => {
+    const sectionCount = 30
+    const rowCount = 3
+    list.innerHTML = ''
+    for (let i = 0; i < sectionCount; i++) {
+      const header = document.createElement('div')
+      header.classList.add('header')
+      header.innerText = `Header ${i + 1}`
+      list.append(header)
+      for (let j = 0; j < rowCount; j++) {
+        const row = document.createElement('div')
+        row.classList.add('row')
+        row.innerText = `This is row ${i + 1}.${j + 1}`
+        row.addEventListener('click', (event) => {
+          console.log(event.target)
+          selectedRow?.classList.remove('selected')
+          selectedRow = event.target
+          event.target.classList.add('selected')
+        })
+        list.append(row)
+      }
+    }
+  }
+
+  const handleScroll = () => {
+    const LIST_BORDER_WIDTH = 3
+    const list = document.querySelector('.list')
+    const listRect = list.getBoundingClientRect()
+    const headers = document.querySelectorAll('.header')
+
+    for (let i = 0; i < headers.length - 1; i++) {
+      const header = headers[i]
+      const headerRect = header.getBoundingClientRect()
+      const diff = headerRect.top - (listRect.top + LIST_BORDER_WIDTH)
+      if (diff > 0) continue
+      
+      const nextHeaderRect = headers[i + 1].getBoundingClientRect()
+      
+      if (nextHeaderRect.top - listRect.top < headerRect.height) {
+        header.style.top = Math.max(nextHeaderRect.top - (listRect.top + LIST_BORDER_WIDTH), 0) - headerRect.height + 'px'
+      } else {
+        header.style.top = '0px'
+      }
+    }
+    const lastHeader = headers[headers.length - 1]
+    lastHeader.style.top = '0px'
+  }
+
+  const reorderRowsRandomly = () => {
+    const list = document.querySelector('.list')
+    const rows = document.querySelectorAll('.row')
+    const se = rows[2]
+    const rowsAndHeaders = document.querySelectorAll('.row, .header')
+    const firstRowOrHeader = rowsAndHeaders[0]
+    for (let i = 0; i < rowsAndHeaders.length; i++) {
+      const row = rowsAndHeaders[i]
+      let distance
+      if (row === randomRow) {
+        distance = firstRowOrHeader.getBoundingClientRect().top - randomRow.getBoundingClientRect().top
+        console.log(distance)
+      } else {
+        distance = randomRow.getBoundingClientRect().height
+      }
+      row.style.transform = `translateY(${distance}px)`
+    }
+    // setTimeout(() => {
+    //   rowsAndHeaders.forEach(row => {
+    //     row.style.transform = 'translateY(0)'
+    //   })
+    //   list.insertBefore(randomRow, firstRowOrHeader)
+    // }, 1000)
+  }
+
+  initList()
+  handleScroll()
+  list.addEventListener('scroll', handleScroll)
+</script>
+</html>

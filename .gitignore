@@ -1,0 +1,13 @@
+# npm
+node_modules
+
+# build
+dist
+
+# environment files
+*.env
+*.env.*
+!.env.example
+
+# local OS files
+.DS_Store
