@@ -30,19 +30,6 @@ class Files {
     this.value = []
     const files = getPlugin().app.vault.getFiles()
     files
-      // .filter(file => {
-      //   const patterns: string[] = this.settings.omittedPaths.filter((path: string) => path.length > 0)
-      //   const fileMatchesGlobPattern = (pattern: string) => {
-      //     try {
-      //       return matchGlob(pattern, file.path)
-      //     } catch (err) {
-      //       // eslint-disable-next-line no-console
-      //       console.error(`${l10n('pluginName')}: Invalid glob pattern: ${pattern}`, err)
-      //       return false
-      //     }
-      //   }
-      //   return !patterns.some(fileMatchesGlobPattern)
-      // })
       .sort((a, b) => b.stat[this.settings.sortBy] - a.stat[this.settings.sortBy])
       .forEach(this.addFile)
     this.loadingFiles.set(false)

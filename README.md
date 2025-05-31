@@ -28,7 +28,7 @@ A plugin for [Obsidian](https://obsidian.md) that displays your notes in a rever
 
 - `Ctrl/Cmd + Shift + L`: Open the notes list and focus the search bar
 
-## Configuration
+## Settings
 
 The plugin settings can be accessed via the Obsidian settings panel under **Sidebar Notes List**:
 

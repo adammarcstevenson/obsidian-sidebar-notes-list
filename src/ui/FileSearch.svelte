@@ -43,13 +43,13 @@
     bind:this={searchInputEl}
     bind:value={state.searchInput.value}
     on:keydown={inputOnKeyDown}
-    placeholder="{l10n('searchPlaceholder')}"
+    placeholder="{l10n('searchPlaceholder') as string}"
     tabindex="0"
     type="search"
   />
   <div
     class="icon-container clear-icon-container"
-    class:hide={!state.searchInput}
+    class:hide={!state.searchInput.value}
     on:click={clearSearchInput}
     on:keydown={clearIconOnKeyDown}
     role="button"

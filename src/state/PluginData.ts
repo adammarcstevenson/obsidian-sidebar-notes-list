@@ -27,6 +27,7 @@ class PluginData {
 
   async removePinnedFile(path: string) {
     const i = this.data.pinnedFiles.findIndex(filePath => filePath === path)
+    if (i === -1) return
     this.data.pinnedFiles.splice(i, 1)
     await getPlugin().saveData(this.data)
   }

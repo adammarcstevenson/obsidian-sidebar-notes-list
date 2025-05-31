@@ -9,7 +9,7 @@
 
   const menu: ActionMenuItem[] = [
     {
-      ariaLabel: l10n('newNoteLabel'),
+      ariaLabel: l10n('newNoteLabel') as string,
       iconId: 'edit',
       onClickHandler: async () => {
         const activeFilePath = getPlugin().app.workspace.getActiveFile()?.path || ''
@@ -27,7 +27,6 @@
         const newFile = await createFile()
         const leaf = getPlugin().app.workspace.getLeaf('tab')
         await leaf.openFile(newFile)
-        console.log(leaf.view.containerEl)
         const titleContainerEl = leaf.view.containerEl.querySelector('div.inline-title') as HTMLElement
         if (!titleContainerEl) return
         titleContainerEl.focus()
@@ -35,14 +34,14 @@
       }
     },
     {
-      ariaLabel: l10n('searchLabel'),
+      ariaLabel: l10n('searchLabel') as string,
       iconId: 'search',
       onClickHandler: () => {
         state.searchInput.showSearch()
       }
     },
     {
-      ariaLabel: l10n('changeSortOrderLabel'),
+      ariaLabel: l10n('changeSortOrderLabel') as string,
       iconId: 'sort-desc',
       onClickHandler: (event: MouseEvent) => {
         const menu = new Menu()
