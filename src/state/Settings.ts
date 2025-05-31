@@ -17,7 +17,7 @@ class Settings {
     return this.pluginData.settings.omittedPaths
   }
   setOmittedPaths = async (paths: string[]): Promise<boolean> => {
-    paths.filter((path: string) => path.length > 0)
+    paths = paths.filter((path: string) => path.length > 0)
     if (compareArrays(this.pluginData.settings.omittedPaths, paths)) return false
     await this.pluginData.updateSetting('omittedPaths', paths)
     return true
