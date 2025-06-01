@@ -19,6 +19,7 @@
     "vite-plugin-static-copy": "^2.2.0"
   },
   "scripts": {
+    "lint": "eslint .",
     "dev:build": "dotenvx run --env NODE_ENV=development -f .env.development -- vite build --mode development",
     "dev:watch": "dotenvx run --env NODE_ENV=development -f .env.development -- vite build --mode development --watch",
     "prod:build": "dotenvx run --env NODE_ENV=production -f .env.production -- vite build"

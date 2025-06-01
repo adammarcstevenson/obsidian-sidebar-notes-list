@@ -9,6 +9,10 @@ export default defineConfig([
   { files: ["**/*.{js,mjs,cjs,ts}"], languageOptions: { globals: globals.browser } },
   tseslint.configs.recommended,
   {
+    ignores: [
+      'dist',
+      'node_modules',
+    ],
     rules: {
       "no-console": "error"
     }
