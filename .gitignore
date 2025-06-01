@@ -11,3 +11,4 @@ dist
 
 # local files
 .DS_Store
+local/
