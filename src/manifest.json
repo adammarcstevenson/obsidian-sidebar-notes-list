@@ -3,8 +3,11 @@
 	"name": "Sidebar Notes List",
 	"version": "1.0.0",
 	"minAppVersion": "1.8.0",
-	"description": "List notes in the left sidebar with additional details",
+	"description": "Adds a view to the left sidebar to display your notes in a reverse chronological list with additional details.",
 	"author": "Adam Stevenson",
 	"authorUrl": "https://adammarcstevenson.com",
-	"isDesktopOnly": false
+	"isDesktopOnly": false,
+	"funding": {
+		"ko-fi": "https://ko-fi.com/adamstevenson"
+	}
 }
