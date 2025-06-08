@@ -1,0 +1,6 @@
+$border-style: var(--border-width) solid var(--color-base-30);
+@mixin text-overflow-styles {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

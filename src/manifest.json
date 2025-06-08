@@ -1,0 +1,10 @@
+{
+	"id": "sidebar-notes-list",
+	"name": "Sidebar Notes List",
+	"version": "0.3.0",
+	"minAppVersion": "1.8.0",
+	"description": "List notes in the left sidebar with additional details",
+	"author": "Adam Stevenson",
+	"authorUrl": "https://adammarcstevenson.com",
+	"isDesktopOnly": false
+}
