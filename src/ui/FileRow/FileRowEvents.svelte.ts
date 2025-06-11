@@ -1,4 +1,4 @@
-import { Menu } from 'obsidian'
+import { App, Menu } from 'obsidian'
 
 import { l10n } from '../../l10n/l10n'
 import { getPlugin } from '../../utils/get-plugin'
@@ -69,8 +69,8 @@ export class FileRowEvents {
       file.tfile.path,
       '',
     )
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const dragManager = (getPlugin().app as any).dragManager
+    // @ts-expect-error - `dragManager` is not a documented property, but used by Obsidian
+    const dragManager = (getPlugin().app as App).dragManager
     const dragData = dragManager.dragFile(event, tfile)
     dragManager.onDragStart(event, dragData)
   }

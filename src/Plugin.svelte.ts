@@ -2,6 +2,7 @@ import {
    type App,
   Plugin,
   type PluginManifest,
+  Workspace,
   type WorkspaceLeaf
 } from 'obsidian'
 
@@ -49,7 +50,6 @@ export class SidebarNotesListPlugin extends Plugin {
     this.addCommand({
       id: `${PLUGIN_ID}-search`,
       name: 'Open and search',
-      hotkeys: [{ key: 'l', modifiers: ['Mod', 'Shift']}],
       callback: async () => {
         await revealLeafView()
         state.searchInput.showSearch()
@@ -76,11 +76,10 @@ export class SidebarNotesListPlugin extends Plugin {
   }
 
   public override onunload(): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.app.workspace as any).unregisterHoverLinkSource(
+    // @ts-expect-error - Using a private API, but it's the only way to unregister hover link sources
+    (this.app.workspace as Workspace).unregisterHoverLinkSource(
       PLUGIN_ID,
     )
-    this.app.workspace.detachLeavesOfType(PLUGIN_ID)
   }
 
   async activateView() {

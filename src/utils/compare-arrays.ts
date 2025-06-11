@@ -4,8 +4,7 @@
  * @param {Array} b - The second array to compare.
  * @returns {boolean} - Returns true if the arrays contain the same elements, false otherwise.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function compareArrays(a: any[], b: any[]): boolean {
+export function compareArrays(a: unknown[], b: unknown[]): boolean {
   if (a.length !== b.length) return false
 
   const sortedA = [...a].sort()
