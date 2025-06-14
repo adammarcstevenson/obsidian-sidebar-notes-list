@@ -2,7 +2,7 @@ import Files from './Files.svelte'
 import InfiniteScroll from './InfiniteScroll.svelte'
 import List from './List.svelte'
 import LoadingFiles from './LoadingFiles.svelte'
-import PluginData from './PluginData'
+import PluginData from './PluginData.svelte'
 import SearchInput from './SearchInput.svelte'
 import Settings from './Settings'
 

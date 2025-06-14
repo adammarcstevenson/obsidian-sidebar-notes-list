@@ -6,7 +6,7 @@ import {
   getRelativeTimestamp,
   matchGlob
 } from '../utils'
-import PluginData from './PluginData'
+import PluginData from './PluginData.svelte'
 import type { File } from '../types'
 import LoadingFiles from './LoadingFiles.svelte'
 import Settings from './Settings'

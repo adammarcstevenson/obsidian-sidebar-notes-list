@@ -2,10 +2,10 @@ import { getPlugin } from '../utils'
 import type { PluginSettings } from '../types'
 
 class PluginData {
-  public data = {
+  public data = $state({
     pinnedFiles: [] as string[],
     settings: {} as PluginSettings
-  }
+  })
 
   // Data setter
   set(data: {

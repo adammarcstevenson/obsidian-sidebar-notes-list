@@ -1,8 +1,8 @@
 import { Notice } from 'obsidian'
 
 import { l10n } from '../l10n/l10n'
-import PluginData from './PluginData'
-import type { PluginSettings, Timestamp } from '../types'
+import PluginData from './PluginData.svelte'
+import type { Timestamp } from '../types'
 import { compareArrays } from '../utils'
 
 class Settings {
