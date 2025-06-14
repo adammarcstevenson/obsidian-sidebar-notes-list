@@ -1,7 +1,7 @@
 {
 	"id": "sidebar-notes-list",
 	"name": "Sidebar Notes List",
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"minAppVersion": "1.8.0",
 	"description": "Adds a view to the left sidebar to display your notes in a reverse chronological list with additional details.",
 	"author": "Adam Stevenson",
