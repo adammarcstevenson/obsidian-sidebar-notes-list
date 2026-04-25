@@ -1,4 +1,5 @@
 <script lang="ts">
+  import state from '../../state'
   import {
     decodeHTMLEntities,
     getPlugin,
@@ -9,7 +10,12 @@
   const showFileSnippet = file.tfile.extension  === 'md'
   const fileSnippet = async () => {
     if (!showFileSnippet) return null
-    const snippet = decodeHTMLEntities(removeMarkdown((await getPlugin().app.vault.cachedRead(file.tfile))).substring(0, 500))
+    const fileContent = await getPlugin().app.vault.cachedRead(file.tfile)
+    const strippedFrontmatter = state.settings.showFrontmatter
+      ? fileContent
+      : fileContent.replace(/^---[\s\S]*?---\s*/, '').trim()
+    const strippedMarkdown = removeMarkdown(strippedFrontmatter)
+    const snippet = decodeHTMLEntities(strippedMarkdown).substring(0, 500)
     if (!snippet) return null
     return snippet
   }

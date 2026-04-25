@@ -1,0 +1,59 @@
+name: Release Obsidian plugin
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release:
+    name: Release Obsidian plugin
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22.x"
+
+      - name: Build plugin
+        run: |
+          npm install
+          npm run prod:build
+
+      - name: Validate release
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          
+          # Check if release notes file exists
+          release_notes_file="release-notes/${tag}.md"
+          if [ ! -f "$release_notes_file" ]; then
+            echo "Error: Release notes file '$release_notes_file' not found!"
+            exit 1
+          fi
+          
+          # Check if manifest.json version matches tag
+          manifest_version=$(jq -r '.version' manifest.json)
+          if [ "$manifest_version" != "$tag" ]; then
+            echo "Error: Version mismatch!"
+            echo "  manifest.json version: $manifest_version"
+            echo "  Git tag: $tag"
+            exit 1
+          fi
+          
+          echo "✓ Release notes file found: $release_notes_file"
+          echo "✓ Version validation passed: $tag"
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+
+          gh release create "$tag" \
+            --title="$tag" \
+            --draft \
+            main.js manifest.json styles.css

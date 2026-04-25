@@ -1,3 +1,4 @@
+import { untrack } from 'svelte'
 import Files from './Files.svelte'
 import { getNormalizedString } from '../utils'
 import InfiniteScroll from './InfiniteScroll.svelte'
@@ -20,7 +21,7 @@ class List {
 
     // Filter list by search input
     if (this.searchInput.value) {
-      this.infiniteScroll.reset()
+      untrack(() => this.infiniteScroll.reset())
       list = list.filter((file: File) => {
         const fileNameWords = getNormalizedString(file.tfile.basename).split(/\s+/)
         const searchInputWords = getNormalizedString(this.searchInput.value).split(/\s+/)

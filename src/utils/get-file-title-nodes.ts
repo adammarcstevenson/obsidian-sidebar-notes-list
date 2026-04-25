@@ -19,7 +19,7 @@ export function getFileTitleNodes(
     let start = normalizedText.indexOf(searchWord)
     while (start > -1) {
       matchIndices.push({ start, end: start + searchWord.length })
-      start = text.indexOf(searchWord, start + 1)
+      start = normalizedText.indexOf(searchWord, start + 1)
     }
   })
 

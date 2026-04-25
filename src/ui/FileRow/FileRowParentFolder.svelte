@@ -3,7 +3,7 @@
   import state from '../../state'
   const { file } = $props()
   const { settings } = state
-  const fileParentText = file.tfile.parent!.isRoot() ? '(Vault folder)' : file.tfile.parent!.name
+  const fileParentText = $derived(file.tfile.parent?.isRoot() === false ? file.tfile.parent!.name : '(Vault folder)')
 </script>
 
 {#if settings.showParentFolder}

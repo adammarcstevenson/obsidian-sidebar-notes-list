@@ -20,8 +20,6 @@
 </div>
 
 <style lang="scss">
-  @import url('https://fonts.googleapis.com/css?family=Quicksand:400,700');
-  
   @mixin kofi-image-animation {
     animation: kofi-wiggle 3s 1;
   }
@@ -76,7 +74,6 @@
     vertical-align: middle;
     border: 0 none #fff;
     font-family:
-      'Quicksand',
       Helvetica,
       'Century Gothic',
       sans-serif;

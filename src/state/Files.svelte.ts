@@ -1,5 +1,6 @@
 import { type TAbstractFile, TFile } from 'obsidian'
 
+import { FILE_LOADING_CHUNK_SIZE } from '../constants'
 import {
   delay,
   getPlugin,
@@ -26,20 +27,21 @@ class Files {
 
   loadFiles = async () => {
     this.loadingFiles.set(true)
-    await delay(100)
     this.value = []
     const files = getPlugin().app.vault.getFiles()
-    files
-      .sort((a, b) => b.stat[this.settings.sortBy] - a.stat[this.settings.sortBy])
-      .forEach(this.addFile)
-    this.loadingFiles.set(false)
 
-    // Register file events
-    getPlugin().registerEvent(getPlugin().app.vault.on('create', this.handleFileCreate))
-    getPlugin().registerEvent(getPlugin().app.vault.on('modify', this.handleFileUpdate))
-    getPlugin().registerEvent(getPlugin().app.vault.on('rename', this.handleFileRename))
-    getPlugin().registerEvent(getPlugin().app.vault.on('delete', this.handleFileDelete))
-    getPlugin().registerEvent(getPlugin().app.workspace.on('file-open', this.handleFileOpen))
+    const chunks: TFile[][] = []
+    
+    for (let i = 0; i < files.length; i+= FILE_LOADING_CHUNK_SIZE) {
+      chunks.push(files.slice(i, i + FILE_LOADING_CHUNK_SIZE))
+    }
+
+    for (const chunk of chunks) {
+      chunk.forEach((file) => this.addFile(file))
+      await delay(0)  // Yield to the event loop between chunks
+    }
+
+    this.loadingFiles.set(false)
   }
 
   private addFile = (tfile: TFile) => {
@@ -106,6 +108,7 @@ class Files {
   handleFileDelete = (tfile: TAbstractFile) => {
     if (!(tfile instanceof TFile)) return
     const i = this.value.findIndex((row: File) => row.tfile.path === tfile.path)
+    if (i < 0) return
     this.value.splice(i, 1)
   }
   
@@ -125,11 +128,11 @@ class Files {
     const i = this.value.findIndex((file: File) => file.tfile.path === tfile.path)
     let file = this.value[i]
     if (!file) return
-    file.pinned = !file.pinned
-    file.timestampGroupingLabel = getRelativeTimestamp(new Date(tfile.stat[this.settings.sortBy]), file.pinned)
-
+    
     // Remove file from files and re-insert in new order
     file = this.value.splice(i, 1)[0]
+    file.pinned = !file.pinned
+    file.timestampGroupingLabel = getRelativeTimestamp(new Date(tfile.stat[this.settings.sortBy]), file.pinned)
     this.insertFile(file)
 
     if (file.pinned) {
@@ -190,16 +193,28 @@ class Files {
   openFile = (file: TFile, {
     active = true,
     newLeaf = false,
+    newWindow = false,
   }: {
     active?: boolean,
     newLeaf?: boolean,
+    newWindow?: boolean,
   } = {}) => {
+    if (newWindow) {
+      const leaf = getPlugin().app.workspace.getLeaf('window')
+      leaf.openFile(file, { active })
+      return
+    }
     let leaf = getPlugin().app.workspace.getMostRecentLeaf()
-    const createLeaf = newLeaf || leaf!.getViewState().pinned
+    const createLeaf = newLeaf || leaf && leaf.getViewState().pinned
     if (createLeaf) {
       leaf = getPlugin().app.workspace.getLeaf(true)
     }
-    leaf!.openFile(file, { active })
+    if (!leaf) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to get leaf to open file in Sidebar Notes List plugin')
+      return
+    }
+    leaf.openFile(file, { active })
     if (!active) {
       this.handleFileOpen(file)
     }

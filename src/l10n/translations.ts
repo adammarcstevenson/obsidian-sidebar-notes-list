@@ -18,7 +18,9 @@ export const enUS: {
   contextMenuTrashFile: 'Move to trash',
 
   // Settings page
-  settingDonateLabel: 'Donate',
+  settingAdvancedHeading: 'Advanced',
+  settingDonateHeading: 'Donate',
+  settingDonateLabel: 'Support this plugin',
   settingDonateDescription: 'If you find this plugin useful, please consider supporting my work with a donation.',
   settingDonateButtonText: 'Buy me a coffee',
   settingOmittedPathsLabel: 'Omitted paths',
@@ -34,6 +36,8 @@ export const enUS: {
   },
   settingPinnedFilesLabel: 'Pinned files',
   settingPinnedFilesDescription: 'Pin files to the top of the sidebar list',
+  settingShowFrontmatterLabel: 'Show frontmatter',
+  settingShowFrontmatterDescription: 'Show the note\'s frontmatter in the note preview',
   settingShowParentLabel: 'Show parent folder',
   settingShowParentDescription: 'Show the name of a file\'s parent folder',
   settingSortByLabel: 'Sort by',
@@ -58,5 +62,5 @@ export const enUS: {
 export const translations: {
   [key: string]: typeof enUS
 } = {
-  'en-US': enUS
+  'en': enUS
 }

@@ -10,6 +10,7 @@ import { SidebarNotesListPlugin } from '../../Plugin.svelte'
 import state from '../../state'
 import type { Timestamp } from '../../types'
 import DonateOption from './DonateOption.svelte'
+import SettingItemHeading from './SettingItemHeading.svelte'
 
 export class SidebarNotesListSettingTab extends PluginSettingTab {
 
@@ -56,6 +57,27 @@ export class SidebarNotesListSettingTab extends PluginSettingTab {
           .setValue(state.settings.pinFiles)
           .onChange(value => {
             state.settings.setPinFiles(value)
+            state.files.loadFiles()
+          })
+      })
+
+    // "Advanced" section
+    mount(SettingItemHeading, {
+      target: containerEl,
+      props: {
+        name: l10n('settingAdvancedHeading') as string
+      }
+    })
+
+    // Show frontmatter
+    new Setting(containerEl)
+      .setName(l10n('settingShowFrontmatterLabel'))
+      .setDesc(l10n('settingShowFrontmatterDescription'))
+      .addToggle(toggle => {
+        toggle
+          .setValue(state.settings.showFrontmatter)
+          .onChange(value => {
+            state.settings.setShowFrontmatter(value)
             state.files.loadFiles()
           })
       })

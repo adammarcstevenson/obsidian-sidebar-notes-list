@@ -12,8 +12,6 @@ export default function setManifestValues(contents: string) {
 
   switch (process.env.NODE_ENV) {
     case 'development':
-      manifest['id'] = manifest['id'] + '-dev'
-      manifest['name'] = manifest['name'] + ' (Dev)'
       manifest['version'] = `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()}.${today.toLocaleTimeString('en-US', toLocaleTimeStringOptions)}-dev`
       break
     case 'production':

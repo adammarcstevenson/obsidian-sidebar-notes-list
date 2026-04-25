@@ -1,12 +1,15 @@
 <script lang="ts">
   import ActionMenu from './ActionMenu.svelte'
   import FileList from './FileList.svelte'
-  import ListLoadingView from './ListLoadingView.svelte'
+  import FileSearch from './FileSearch.svelte'
+  import state from '../state'
 </script>
 
 <div class="sidebar">
   <ActionMenu />
-  <ListLoadingView />
+  {#if state.searchInput.isVisible}
+    <FileSearch />
+  {/if}
   <FileList />
 </div>
 
@@ -18,9 +21,9 @@
     padding: 0;
     overflow: auto;
   }
-  :global(.is-mobile), :global(.is-tablet) {
-    .sidebar {
-      flex-direction: column-reverse;
-    }
+  
+  // Removed padding added by Obsidian to view content container
+  :global(div[data-type="sidebar-notes-list"] > div.view-content) {
+    padding: 0;
   }
 </style>

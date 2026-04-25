@@ -2,6 +2,7 @@
   import { Menu, type TFile } from 'obsidian'
 
   import { l10n } from '../l10n/l10n'
+  import LoadingSpinner from './LoadingSpinner.svelte'
   import ObsidianIcon from './ObsidianIcon.svelte'
   import state from '../state'
   import type { ActionMenuItem, Timestamp } from '../types'
@@ -14,7 +15,8 @@
       onClickHandler: async () => {
         const activeFilePath = getPlugin().app.workspace.getActiveFile()?.path || ''
         const newFileParentFolder = getPlugin().app.fileManager.getNewFileParent(activeFilePath)
-        const createFile = async (num = 0) => {
+        const createFile = async (num = 0): Promise<TFile> => {
+          if (num > 100) throw new Error('Failed to create new file')
           const filePath = num === 0 ? `${newFileParentFolder.path}/${l10n('untitledFilename')}.md` : `${newFileParentFolder.path}/${l10n('untitledFilename')} ${num}.md`
           let file: TFile
           try {
@@ -26,7 +28,9 @@
         }
         const newFile = await createFile()
         const leaf = getPlugin().app.workspace.getLeaf('tab')
-        await leaf.openFile(newFile)
+        await leaf.openFile(newFile, {
+          eState: { rename: 'all' }
+        })
         const titleContainerEl = leaf.view.containerEl.querySelector('div.inline-title') as HTMLElement
         if (!titleContainerEl) return
         titleContainerEl.focus()
@@ -36,8 +40,9 @@
     {
       ariaLabel: l10n('searchLabel') as string,
       iconId: 'search',
+      isActive: () => state.searchInput.isVisible,
       onClickHandler: () => {
-        state.searchInput.showSearch()
+        state.searchInput.toggle()
       }
     },
     {
@@ -62,27 +67,57 @@
         )
         menu.showAtMouseEvent(event)
       }
+    },
+    {
+      ariaLabel: 'Refresh',
+      iconId: 'refresh-cw',
+      onClickHandler: () => {
+        state.files.loadFiles()
+      },
+      showOnlyInDebugMode: true
     }
-  ]
+  ].filter(item => {
+     const isDebugMode = localStorage.getItem('sidebar-notes-list-debug') === 'true'
+    return isDebugMode || !item.showOnlyInDebugMode
+  })
 </script>
 
-<div class="action-menu nav-buttons-container">
-  {#each menu as btn}
-    <button
-      class="action-menu-btn clickable-icon nav-action-button"
-      aria-label="{btn.ariaLabel}"
-      on:click={btn.onClickHandler}
-    >
-      <ObsidianIcon
-        iconId={btn.iconId}
-      />
-    </button>
-  {/each}
-</div>
+<div
+  class="action-menu"
+  class:phone={state.platform.isPhone}
+>
+  <LoadingSpinner />
+  <div
+    class="nav-buttons-container"
+    class:not-phone={!state.platform.isPhone}
+  >
+    {#each menu as btn}
+      <button
+        class="action-menu-btn clickable-icon nav-action-button"
+        class:is-active={btn.isActive?.()}
+        aria-label="{btn.ariaLabel}"
+        on:click={btn.onClickHandler}
+      >
+        <ObsidianIcon
+          iconId={btn.iconId}
+        />
+      </button>
+    {/each}
+  </div>
+  <div></div> <!-- Empty right column for balance using grid layout -->
+</div> 
 
 <style>
   .action-menu {
+    z-index: 2;
     margin: var(--size-4-2);
-    margin-bottom: max(var(--size-4-2), var(--safe-area-inset-bottom));
+    position: relative;
+    &.phone {
+      margin: inherit;
+      position: inherit;
+    }
+  }
+  .nav-buttons-container.not-phone {
+    position: inherit;
   }
 </style>

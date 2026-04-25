@@ -21,6 +21,7 @@
 
   const onAuxClick = (event: MouseEvent) => FileRowEvents.onAuxClick(event, file)
   const onClick = (event: MouseEvent) => FileRowEvents.onClick(event, file)
+  const onDblClick = (event: MouseEvent) => FileRowEvents.onDblClick(event, file)
   const onContextMenu = (event: MouseEvent) => FileRowEvents.onContextMenu(event, file)
   const onDragStart = (event: DragEvent) => FileRowEvents.onDragStart(event, file)
   const onKeyUp = (event: KeyboardEvent) => FileRowEvents.onKeyUp(event, file)
@@ -37,6 +38,7 @@
   role="option"
   tabindex="0"
   onclick={onClick}
+  ondblclick={onDblClick}
   oncontextmenu={onContextMenu}
   onauxclick={onAuxClick}
   ondragstart={onDragStart}

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { getIcon } from 'obsidian'
-  import { onMount } from 'svelte'
 
   type Props = {
     iconId: string,
@@ -14,7 +13,8 @@
 
   let container: HTMLDivElement
 
-  onMount(() => {
+  $effect(() => {
+    container.innerHTML = ''
     container.append(getIcon(iconId) as Node)
   })
 </script>

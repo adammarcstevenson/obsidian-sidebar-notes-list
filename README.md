@@ -1,4 +1,4 @@
-# Obsidian Sidebar Notes List
+# Sidebar Notes List
 
 A plugin for [Obsidian](https://obsidian.md) that displays your notes in a reverse chronological list in the left sidebar.
 
@@ -61,4 +61,4 @@ Created by [Adam Stevenson](https://adammarcstevenson.com)
 ## Support
 This project is a fun hobby for me. If it brought you any joy, you can leave a tip:
 
-<a href="https://ko-fi.com/K3K01FV01H" target="_blank"><img height="36" src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" alt="Buy Me a Coffee at ko-fi.com" /></a>
+<a href="https://ko-fi.com/K3K01FV01H" target="_blank"><img width="143" src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" alt="Buy Me a Coffee at ko-fi.com" /></a>

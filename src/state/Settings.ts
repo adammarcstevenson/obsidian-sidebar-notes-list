@@ -31,6 +31,14 @@ class Settings {
     await this.pluginData.updateSetting('pinFiles', bool)
   }
 
+  // Show Frontmatter
+  get showFrontmatter() {
+    return this.pluginData.settings.showFrontmatter
+  }
+  setShowFrontmatter = async (bool: boolean) => {
+    await this.pluginData.updateSetting('showFrontmatter', bool)
+  }
+
   // Show Parent Folder
   get showParentFolder() {
     return this.pluginData.settings.showParentFolder

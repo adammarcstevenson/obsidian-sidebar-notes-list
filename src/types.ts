@@ -3,7 +3,9 @@ import { TFile } from 'obsidian'
 type ActionMenuItem = {
   ariaLabel: string
   iconId: string,
-  onClickHandler: (() => void) | ((event: MouseEvent) => void)
+  isActive?: () => boolean,
+  onClickHandler: (() => void) | ((event: MouseEvent) => void),
+  showOnlyInDebugMode?: boolean
 }
 type File = {
   active: boolean,
@@ -19,6 +21,7 @@ type PluginData = {
 type PluginSettings = {
   omittedPaths: string[]
   pinFiles: boolean,
+  showFrontmatter: boolean,
   showParentFolder: boolean,
   sortBy: Timestamp
 }

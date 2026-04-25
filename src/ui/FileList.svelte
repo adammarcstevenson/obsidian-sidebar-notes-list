@@ -1,14 +1,16 @@
 <script lang="ts">
+  import { Platform } from 'obsidian'
   import { onMount } from 'svelte'
 
   import { LIST_BORDER_WIDTH } from '../constants'
   import FileRow from './FileRow/FileRow.svelte'
-  import FileSearch from './FileSearch.svelte'
   import HeaderRow from './HeaderRow.svelte'
   import state from '../state'
   
   let listEl: HTMLElement
   let infiniteScrollEl: HTMLElement
+
+  const isMobile = Platform.isMobile
 
   onMount(async () => {
     await state.files.loadFiles()
@@ -62,6 +64,7 @@
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       event.preventDefault()
       const i = state.list.value.findIndex(file => file.active)
+      if (i < 0) return
       if (
         (i === state.list.value.length - 1 && event.key === 'ArrowDown') ||
         (i === 0 && event.key === 'ArrowUp')
@@ -78,28 +81,18 @@
     }
   }
 
-  let fileSearch: FileSearch
-  const showSearch = () => {
-    listEl.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-    fileSearch.focus()
-  }
-  state.searchInput.showSearch = showSearch
 </script>
 
 <div
   bind:this={listEl}
   class="list"
-  class:hide={state.loadingFiles.value}
+  class:mobile={isMobile}
   role="listbox"
   tabindex="0"
   on:keydown={onKeyDown}
   on:scroll={onScroll}
 >
-  <FileSearch bind:this={fileSearch} />
-  {#each state.list.value as file, index}
+  {#each state.list.value as file, index (file.tfile.path)}
     {#if file.showTimestampGroupingLabel}
       <HeaderRow
         bind:this={headerRows[index]}
@@ -122,12 +115,14 @@
   @use './global.scss' as *;
 
   .list {
-    border-top: none;
     height: 100%;
     overflow: auto;
     padding-left: var(--size-4-4);
     padding-right: var(--size-4-4);
     border-top: $border-style;
+    &.mobile {
+      border-top: none;
+    }
   }
   .infinite-scroll {
     display: flex;
@@ -136,8 +131,5 @@
     min-height: 1px;
     padding: var(--size-4-4);
     color: white;
-  }
-  .list.hide {
-    display: none;
   }
 </style>

@@ -17,7 +17,7 @@
     class:mobile={Platform.isMobile || Platform.isTablet}
   >
     <button
-      aria-label={file.pinned ? l10n('removePinActionLabel') : l10n('pinActionLabel')}
+      aria-label={file.pinned ? l10n('removePinActionLabel') as string : l10n('pinActionLabel') as string}
       class="clickable-icon"
       onclick={onPinClick}
     >

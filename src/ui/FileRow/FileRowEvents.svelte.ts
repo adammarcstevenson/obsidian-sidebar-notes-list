@@ -9,6 +9,8 @@ const { files, settings } = state
 
 export class FileRowEvents {
 
+  private static clickTimer: ReturnType<typeof setTimeout> | null = null
+
   static onAuxClick = (event: MouseEvent, file: File) => {
     if (event.button !== 1) return
     files.openFile(file.tfile, {
@@ -17,12 +19,24 @@ export class FileRowEvents {
   }
 
   static onClick = (event: MouseEvent, file: File) => {
-    const openFile = getPlugin().app.workspace.getMostRecentLeaf()?.getViewState().state?.file
-    if (openFile !== file.tfile.path) {
-      files.openFile(file.tfile, {
-        newLeaf: event.ctrlKey || event.metaKey
-      })
+    if (FileRowEvents.clickTimer !== null) return
+    FileRowEvents.clickTimer = setTimeout(() => {
+      FileRowEvents.clickTimer = null
+      const openFile = getPlugin().app.workspace.getMostRecentLeaf()?.getViewState().state?.file
+      if (openFile !== file.tfile.path) {
+        files.openFile(file.tfile, {
+          newLeaf: event.ctrlKey || event.metaKey
+        })
+      }
+    }, 200)
+  }
+
+  static onDblClick = (_event: MouseEvent, file: File) => {
+    if (FileRowEvents.clickTimer !== null) {
+      clearTimeout(FileRowEvents.clickTimer)
+      FileRowEvents.clickTimer = null
     }
+    files.openFile(file.tfile, { newWindow: true })
   }
 
   static onContextMenu = (event: MouseEvent, file: File) => {
@@ -57,8 +71,7 @@ export class FileRowEvents {
         .setIcon('trash')
         // @ts-expect-error - `setWarning` is not a documented method, but used by Obsidian
         .setWarning(true)
-        // @ts-expect-error - `commands` is not a documented property, but used by Obsidian
-        .onClick(() => { getPlugin().app.commands.executeCommandById('app:delete-file') })
+        .onClick(() => { getPlugin().app.fileManager.trashFile(file.tfile) })
     })
 
     menu.showAtPosition({ x: event.clientX, y: event.clientY })
