@@ -23,9 +23,12 @@ A plugin for [Obsidian](https://obsidian.md) that displays your notes in a rever
 4. Use the search bar at the top to filter notes by name
 5. Use the action buttons to create new notes or change sort order
 
-### Keyboard Shortcuts
+### Commands
 
-- `Ctrl/Cmd + Shift + L`: Open the notes list and focus the search bar
+- **Open**: Opens the Sidebar Notes List view
+- **Open and search**: Opens the view and focuses the search bar
+
+You can assign keyboard shortcuts to these commands in **Settings > Hotkeys**.
 
 ### Settings
 
@@ -34,6 +37,7 @@ The plugin settings can be accessed via the Obsidian settings panel under **Side
 - **Sort by**: Choose between "Last modified" (default) or "Created" sorting
 - **Show parent folder**: Toggle display of each note's parent folder
 - **Pinned files**: Toggle the ability to pin files to the top of the list
+- **Show frontmatter**: Toggle display of frontmatter in the note preview
 - **Omitted path patterns**: Specify glob patterns to exclude certain files from the list
 
 #### Filtering files
