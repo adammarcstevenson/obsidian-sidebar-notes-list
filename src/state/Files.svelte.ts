@@ -29,6 +29,7 @@ class Files {
     this.loadingFiles.set(true)
     this.value = []
     const files = getPlugin().app.vault.getFiles()
+    files.sort((a, b) => b.stat[this.settings.sortBy] - a.stat[this.settings.sortBy])
 
     const chunks: TFile[][] = []
     
@@ -37,7 +38,7 @@ class Files {
     }
 
     for (const chunk of chunks) {
-      chunk.forEach((file) => this.addFile(file))
+      chunk.forEach((tfile) => this.appendFile(tfile))
       await delay(0)  // Yield to the event loop between chunks
     }
 
@@ -45,7 +46,7 @@ class Files {
   }
 
   private addFile = (tfile: TFile) => {
-  
+
     // Determine if file is active
     let active = false
     const activeFile = getPlugin().app.workspace.getActiveFile()
@@ -63,9 +64,43 @@ class Files {
       tfile,
       timestampGroupingLabel: getRelativeTimestamp(new Date(tfile.stat[this.settings.sortBy]), pinned)
     }
-  
+
     // Add file to list
     this.insertFile(file)
+  }
+
+  /** Append a file during bulk load. Assumes files arrive pre-sorted by timestamp (newest first). */
+  private appendFile = (tfile: TFile) => {
+    if (this.checkOmittedPaths(tfile)) return
+
+    let active = false
+    const activeFile = getPlugin().app.workspace.getActiveFile()
+    if (activeFile && tfile.path === activeFile.path) {
+      active = true
+    }
+
+    const pinned = this.settings.pinFiles ? this.pluginData.pinnedFiles.some((path: string) => path === tfile.path) : false
+
+    const file: File = {
+      active,
+      pinned,
+      showTimestampGroupingLabel: false,
+      tfile,
+      timestampGroupingLabel: getRelativeTimestamp(new Date(tfile.stat[this.settings.sortBy]), pinned)
+    }
+
+    // Pinned files go to front; everything else appends in pre-sorted order
+    if (pinned) {
+      // Find the end of the pinned section
+      const firstUnpinned = this.value.findIndex((f) => !f.pinned)
+      if (firstUnpinned === -1) {
+        this.value.push(file)
+      } else {
+        this.value.splice(firstUnpinned, 0, file)
+      }
+    } else {
+      this.value.push(file)
+    }
   }
 
   private changeFile = (tfile: TAbstractFile) => {
