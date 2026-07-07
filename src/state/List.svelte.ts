@@ -9,19 +9,27 @@ class List {
   files: Files
   infiniteScroll: InfiniteScroll
   searchInput: SearchInput
+  #lastSearchValue: string
 
   constructor (files: Files, infiniteScroll: InfiniteScroll, searchInput: SearchInput) {
     this.files = files
     this.infiniteScroll = infiniteScroll
     this.searchInput = searchInput
+    this.#lastSearchValue = searchInput.value
   }
 
   value = $derived.by<File[]>(() => {
     let list = this.files.value
 
+    // Reset pagination only when the search query itself changes, not on every
+    // recompute (e.g. triggered by infiniteScroll.loadMore() while searching)
+    if (this.searchInput.value !== this.#lastSearchValue) {
+      this.#lastSearchValue = this.searchInput.value
+      untrack(() => this.infiniteScroll.reset())
+    }
+
     // Filter list by search input
     if (this.searchInput.value) {
-      untrack(() => this.infiniteScroll.reset())
       list = list.filter((file: File) => {
         const fileNameWords = getNormalizedString(file.tfile.basename).split(/\s+/)
         const searchInputWords = getNormalizedString(this.searchInput.value).split(/\s+/)

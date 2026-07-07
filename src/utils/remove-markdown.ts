@@ -17,6 +17,9 @@ export function removeMarkdown(markdown: string): string {
   
   // Remove links [text](url)
   text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+
+  // Remove wikilinks [[Note Name]] or [[Note Name|Display Text]]
+  text = text.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, target: string, alias?: string) => alias ?? target)
   
   // Remove images ![alt](src)
   text = text.replace(/!\[([^\]]+)\]\([^)]+\)/g, '')
@@ -31,7 +34,7 @@ export function removeMarkdown(markdown: string): string {
   text = text.replace(/^\s*>\s+/gm, '')
   
   // Remove horizontal rules
-  text = text.replace(/^\s*([*-_])\s*\1\s*\1(\1|\s)*$/gm, '')
+  text = text.replace(/^\s*([*_-])\s*\1\s*\1(\1|\s)*$/gm, '')
   
   // Remove list markers
   text = text.replace(/^\s*[-*+]\s+/gm, '')

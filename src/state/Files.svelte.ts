@@ -108,7 +108,11 @@ class Files {
     
     // Find file and update file details
     const i = this.value.findIndex((row: File) => row.tfile.path === tfile.path)
-    if (i < 0) return
+    if (i < 0) {
+      // Not currently tracked (e.g. was in an omitted path) - add it if it now qualifies
+      this.addFile(tfile)
+      return
+    }
     const row = this.value[i]
     row.tfile = tfile
     row.timestampGroupingLabel = getRelativeTimestamp(new Date(tfile.stat[this.settings.sortBy]), row.pinned)
