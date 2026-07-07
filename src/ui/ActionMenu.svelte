@@ -86,11 +86,11 @@
   class="action-menu"
   class:phone={state.platform.isPhone}
 >
-  <LoadingSpinner />
   <div
     class="nav-buttons-container"
     class:not-phone={!state.platform.isPhone}
   >
+    <LoadingSpinner />
     {#each menu as btn}
       <button
         class="action-menu-btn clickable-icon nav-action-button"
@@ -113,6 +113,7 @@
     margin: var(--size-4-2);
     position: relative;
     &.phone {
+      position: inherit;
       margin: inherit;
     }
   }
