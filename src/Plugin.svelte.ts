@@ -81,7 +81,7 @@ export class SidebarNotesListPlugin extends Plugin {
   }
 
   async activateView() {
-    let leaf: WorkspaceLeaf | null = null
+    let leaf: WorkspaceLeaf | null
     const leaves = this.app.workspace.getLeavesOfType(this.manifest.id)
     if (leaves.length > 0) {
       // A leaf with our view already exists

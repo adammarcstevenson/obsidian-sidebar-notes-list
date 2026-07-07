@@ -239,7 +239,7 @@ class Files {
       leaf.openFile(file, { active })
       return
     }
-    let leaf = getPlugin().app.workspace.getMostRecentLeaf()
+    let leaf = getPlugin().app.workspace.getMostRecentLeaf(getPlugin().app.workspace.rootSplit)
     const createLeaf = newLeaf || leaf && leaf.getViewState().pinned
     if (createLeaf) {
       leaf = getPlugin().app.workspace.getLeaf(true)

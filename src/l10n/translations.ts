@@ -59,8 +59,68 @@ export const enUS: {
   viewIconLabel: 'Notes'
 }
 
+export const fr: typeof enUS = {
+  // Names
+  listViewDisplayName: 'Notes',
+  pluginName: import.meta.env.NODE_ENV === 'development' ? 'Sidebar Notes List (Dev)' : 'Sidebar Notes List',
+
+  // Action menu
+  newNoteLabel: 'Nouvelle note',
+  searchLabel: 'Rechercher',
+  changeSortOrderLabel: 'Modifier l\'ordre de tri',
+  sortOptionCreated: 'Date de création (du plus récent au plus ancien)',
+  sortOptionLastModified: 'Date de modification (du plus récent au plus ancien)',
+
+  // File row context menu
+  contextMenuPinFile: 'Épingler le fichier',
+  contextMenuRemoveFilePin: 'Désépingler le fichier',
+  contextMenuTrashFile: 'Déplacer vers la corbeille',
+
+  // Settings page
+  settingAdvancedHeading: 'Avancé',
+  settingDonateHeading: 'Faire un don',
+  settingDonateLabel: 'Soutenir ce plugin',
+  settingDonateDescription: 'Si ce plugin vous est utile, pensez à soutenir mon travail par un don.',
+  settingDonateButtonText: 'Offrez-moi un café',
+  settingOmittedPathsLabel: 'Chemins ignorés',
+  settingOmittedPathsDescription: () => {
+    const fragment = document.createDocumentFragment()
+    fragment.append('Ignorer certains chemins dans la liste des fichiers. Utilisez des motifs glob pour définir les chemins à ignorer. Un motif par ligne. Voir ')
+    const link = document.createElement('a')
+    link.href = 'https://michaelcurrin.github.io/dev-cheatsheets/cheatsheets/shell/files/globbing.html'
+    link.text = 'Globbing | Dev Cheatsheets'
+    fragment.append(link)
+    fragment.append(' pour plus d\'informations.')
+    return fragment
+  },
+  settingPinnedFilesLabel: 'Fichiers épinglés',
+  settingPinnedFilesDescription: 'Épingler des fichiers en haut de la liste de la barre latérale',
+  settingShowFrontmatterLabel: 'Afficher les métadonnées',
+  settingShowFrontmatterDescription: 'Afficher les métadonnées de la note dans l\'aperçu',
+  settingShowParentLabel: 'Afficher le dossier parent',
+  settingShowParentDescription: 'Afficher le nom du dossier parent du fichier',
+  settingSortByLabel: 'Trier par',
+
+  // Timestamps
+  relativeTimestampToday: 'Aujourd\'hui',
+  relativeTimestampYesterday: 'Hier',
+  relativeTimestampLast7Days: '7 derniers jours',
+  relativeTimestampLast30Days: '30 derniers jours',
+  relativeTimestampPinned: 'Épinglés',
+
+  // Miscellaneous
+  loadingFilesMessage: 'Chargement des fichiers…',
+  noticeSortOrderChanged: 'Ordre de tri modifié',
+  pinActionLabel: 'Épingler le fichier',
+  removePinActionLabel: 'Retirer l\'épingle',
+  searchPlaceholder: 'Rechercher…',
+  untitledFilename: 'Sans titre',
+  viewIconLabel: 'Notes'
+}
+
 export const translations: {
   [key: string]: typeof enUS
 } = {
-  'en': enUS
+  'en': enUS,
+  'fr': fr
 }

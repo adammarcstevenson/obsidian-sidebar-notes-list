@@ -114,7 +114,6 @@
     position: relative;
     &.phone {
       margin: inherit;
-      position: inherit;
     }
   }
   .nav-buttons-container.not-phone {

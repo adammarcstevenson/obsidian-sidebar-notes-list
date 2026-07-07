@@ -22,7 +22,7 @@ export class FileRowEvents {
     if (FileRowEvents.clickTimer !== null) return
     FileRowEvents.clickTimer = setTimeout(() => {
       FileRowEvents.clickTimer = null
-      const openFile = getPlugin().app.workspace.getMostRecentLeaf()?.getViewState().state?.file
+      const openFile = getPlugin().app.workspace.getMostRecentLeaf(getPlugin().app.workspace.rootSplit)?.getViewState().state?.file
       if (openFile !== file.tfile.path) {
         files.openFile(file.tfile, {
           newLeaf: event.ctrlKey || event.metaKey
@@ -69,7 +69,6 @@ export class FileRowEvents {
         .setSection('danger')
         .setTitle(l10n('contextMenuTrashFile'))
         .setIcon('trash')
-        // @ts-expect-error - `setWarning` is not a documented method, but used by Obsidian
         .setWarning(true)
         .onClick(() => { getPlugin().app.fileManager.trashFile(file.tfile) })
     })
