@@ -5,11 +5,11 @@ type ActionMenuItem = {
   iconId: string,
   isActive?: () => boolean,
   onClickHandler: (() => void) | ((event: MouseEvent) => void),
-  showOnlyInDebugMode?: boolean
 }
 type File = {
   active: boolean,
   pinned: boolean,
+  selected: boolean,
   showTimestampGroupingLabel: boolean,
   tfile: TFile,
   timestampGroupingLabel: string

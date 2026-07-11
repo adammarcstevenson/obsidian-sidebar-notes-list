@@ -28,10 +28,11 @@
 </script>
 
 <div
-  aria-selected="{file.active}"
+  aria-selected="{file.active || file.selected}"
   bind:this={rowEl}
   class="row"
   class:active={file.active}
+  class:selected={file.selected}
   class:has-focus={file.active}
   data-path="{file.tfile.path}"
   draggable="true"
@@ -79,6 +80,15 @@
     background-color: var(--nav-item-background-hover);
   }
   .row.active {
+    background-color: var(--text-selection);
+  }
+  .row.selected {
+    background-color: color-mix(in srgb, var(--interactive-accent) 20%, var(--background-primary));
+  }
+  .row.selected:hover {
+    background-color: color-mix(in srgb, var(--interactive-accent) 30%, var(--background-primary));
+  }
+  .row.selected.active {
     background-color: var(--text-selection);
   }
 

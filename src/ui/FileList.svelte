@@ -61,6 +61,10 @@
 
   let rows: HTMLElement[] = []
   const onKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      state.files.clearSelection()
+      return
+    }
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       event.preventDefault()
       const i = state.list.value.findIndex(file => file.active)
@@ -69,10 +73,13 @@
         (i === state.list.value.length - 1 && event.key === 'ArrowDown') ||
         (i === 0 && event.key === 'ArrowUp')
       ) return
-      state.files.openFile(state.list.value[i + (event.key === 'ArrowDown' ? 1 : -1)].tfile, {
+      const nextFile = state.list.value[i + (event.key === 'ArrowDown' ? 1 : -1)]
+      state.files.clearSelection()
+      state.files.openFile(nextFile.tfile, {
         active: false,
         newLeaf: false
       })
+      state.files.lastInteractedPath = nextFile.tfile.path
       const activeRow = rows[state.list.value.findIndex(file => file.active)]
       activeRow.scrollIntoView({
         behavior: 'instant',

@@ -1,11 +1,11 @@
-import { App, Menu } from 'obsidian'
+import { App, Menu, TFile } from 'obsidian'
 
 import { l10n } from '../../l10n/l10n'
 import { getPlugin } from '../../utils/get-plugin'
 import state from '../../state'
 import type { File } from '../../types'
 
-const { files, settings } = state
+const { files, list, settings } = state
 
 export class FileRowEvents {
 
@@ -19,6 +19,27 @@ export class FileRowEvents {
   }
 
   static onClick = (event: MouseEvent, file: File) => {
+    if (event.shiftKey) {
+      if (FileRowEvents.clickTimer !== null) {
+        clearTimeout(FileRowEvents.clickTimer)
+        FileRowEvents.clickTimer = null
+      }
+      files.selectFileRange(file.tfile, list.value)
+      return
+    }
+
+    if (event.altKey) {
+      if (FileRowEvents.clickTimer !== null) {
+        clearTimeout(FileRowEvents.clickTimer)
+        FileRowEvents.clickTimer = null
+      }
+      files.toggleFileSelection(file.tfile)
+      return
+    }
+
+    files.clearSelection()
+    files.lastInteractedPath = file.tfile.path
+
     if (FileRowEvents.clickTimer !== null) return
     FileRowEvents.clickTimer = setTimeout(() => {
       FileRowEvents.clickTimer = null
@@ -40,49 +61,107 @@ export class FileRowEvents {
   }
 
   static onContextMenu = (event: MouseEvent, file: File) => {
-    const menu = new Menu()
+    const selectedFiles = files.getSelectedFiles()
+    const isMultiSelect = file.selected && selectedFiles.length > 1
 
-    // Pin action
-    if (settings.pinFiles) {
-      menu.addItem(item => {
-        item
-          .setSection('pin')
-          .setTitle(file.pinned ? l10n('contextMenuRemoveFilePin') : l10n('contextMenuPinFile'))
-          .setIcon(file.pinned ? 'pin-off' : 'pin')
-          .onClick(() => { files.handleFilePinnedToggle(file.tfile) })
-      })
-      menu.addSeparator()
+    if (!isMultiSelect) {
+      files.clearSelection()
     }
 
-    menu.addSeparator()
+    const menu = new Menu()
 
-    getPlugin().app.workspace.trigger(
-      'file-menu',
-      menu,
-      file.tfile,
-      'sidebar-notes-list-plugin'
-    )
+    if (isMultiSelect) {
+      const tfiles = selectedFiles.map(f => f.tfile)
+      const allPinned = selectedFiles.every(f => f.pinned)
 
-    // Trash action
-    menu.addItem(item => {
-      item
-        .setSection('danger')
-        .setTitle(l10n('contextMenuTrashFile'))
-        .setIcon('trash')
-        .setWarning(true)
-        .onClick(() => { getPlugin().app.fileManager.trashFile(file.tfile) })
-    })
+      // Pin action
+      if (settings.pinFiles) {
+        menu.addItem(item => {
+          item
+            .setSection('pin')
+            .setTitle(allPinned ? l10n('contextMenuRemoveFilePins') : l10n('contextMenuPinFiles'))
+            .setIcon(allPinned ? 'pin-off' : 'pin')
+            .onClick(() => { files.setFilesPinnedState(tfiles, !allPinned) })
+        })
+        menu.addSeparator()
+      }
+
+      menu.addSeparator()
+
+      getPlugin().app.workspace.trigger(
+        'files-menu',
+        menu,
+        tfiles,
+        'sidebar-notes-list-plugin'
+      )
+
+      // Trash action
+      menu.addItem(item => {
+        item
+          .setSection('danger')
+          .setTitle((l10n('contextMenuTrashFiles') as string).replace('{count}', String(tfiles.length)))
+          .setIcon('trash')
+          .setWarning(true)
+          .onClick(() => {
+            tfiles.forEach(tfile => { getPlugin().app.fileManager.trashFile(tfile) })
+            files.clearSelection()
+          })
+      })
+    } else {
+
+      // Pin action
+      if (settings.pinFiles) {
+        menu.addItem(item => {
+          item
+            .setSection('pin')
+            .setTitle(file.pinned ? l10n('contextMenuRemoveFilePin') : l10n('contextMenuPinFile'))
+            .setIcon(file.pinned ? 'pin-off' : 'pin')
+            .onClick(() => { files.handleFilePinnedToggle(file.tfile) })
+        })
+        menu.addSeparator()
+      }
+
+      menu.addSeparator()
+
+      getPlugin().app.workspace.trigger(
+        'file-menu',
+        menu,
+        file.tfile,
+        'sidebar-notes-list-plugin'
+      )
+
+      // Trash action
+      menu.addItem(item => {
+        item
+          .setSection('danger')
+          .setTitle(l10n('contextMenuTrashFile'))
+          .setIcon('trash')
+          .setWarning(true)
+          .onClick(() => { getPlugin().app.fileManager.trashFile(file.tfile) })
+      })
+    }
 
     menu.showAtPosition({ x: event.clientX, y: event.clientY })
   }
 
   static onDragStart = (event: DragEvent, file: File) => {
+    // @ts-expect-error - `dragManager` is not a documented property, but used by Obsidian
+    const dragManager = (getPlugin().app as App).dragManager
+
+    const selectedFiles = files.getSelectedFiles()
+    if (file.selected && selectedFiles.length > 1) {
+      const tfiles = selectedFiles
+        .map(f => getPlugin().app.metadataCache.getFirstLinkpathDest(f.tfile.path, ''))
+        .filter((tfile): tfile is TFile => tfile !== null)
+      const dragData = dragManager.dragFiles(event, tfiles)
+      dragManager.onDragStart(event, dragData)
+      return
+    }
+
     const tfile = getPlugin().app.metadataCache.getFirstLinkpathDest(
       file.tfile.path,
       '',
     )
-    // @ts-expect-error - `dragManager` is not a documented property, but used by Obsidian
-    const dragManager = (getPlugin().app as App).dragManager
     const dragData = dragManager.dragFile(event, tfile)
     dragManager.onDragStart(event, dragData)
   }

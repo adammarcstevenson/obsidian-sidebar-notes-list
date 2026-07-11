@@ -18,6 +18,8 @@ class Files {
   pluginData: PluginData
   settings: Settings
   value: File[] = $state([])
+  /** Anchor path for Shift+Click range selection - last file opened or Alt+Click-toggled */
+  lastInteractedPath: string | null = null
 
   constructor (loadingFiles: LoadingFiles, pluginData: PluginData, settings: Settings) {
     this.loadingFiles = loadingFiles
@@ -60,6 +62,7 @@ class Files {
     const file = {
       active,
       pinned,
+      selected: false,
       showTimestampGroupingLabel: false,
       tfile,
       timestampGroupingLabel: getRelativeTimestamp(new Date(tfile.stat[this.settings.sortBy]), pinned)
@@ -84,6 +87,7 @@ class Files {
     const file: File = {
       active,
       pinned,
+      selected: false,
       showTimestampGroupingLabel: false,
       tfile,
       timestampGroupingLabel: getRelativeTimestamp(new Date(tfile.stat[this.settings.sortBy]), pinned)
@@ -183,6 +187,52 @@ class Files {
   
   handleFileRename = (tfile: TAbstractFile) => {
     this.changeFile(tfile)
+  }
+
+  clearSelection = () => {
+    this.value.forEach((file: File) => {
+      if (file.selected) file.selected = false
+    })
+  }
+
+  getSelectedFiles = (): File[] => {
+    return this.value.filter((file: File) => file.selected)
+  }
+
+  /** Range-select from the last interacted file (or the clicked file, if there's no valid anchor) through `tfile`, using `orderedFiles` for position - pass the currently rendered list so the range matches what's on screen. */
+  selectFileRange = (tfile: TFile, orderedFiles: File[]) => {
+    const targetIndex = orderedFiles.findIndex((file: File) => file.tfile.path === tfile.path)
+    if (targetIndex < 0) return
+
+    let anchorIndex = this.lastInteractedPath === null
+      ? -1
+      : orderedFiles.findIndex((file: File) => file.tfile.path === this.lastInteractedPath)
+
+    if (anchorIndex < 0) {
+      this.lastInteractedPath = tfile.path
+      anchorIndex = targetIndex
+    }
+
+    const [start, end] = anchorIndex < targetIndex ? [anchorIndex, targetIndex] : [targetIndex, anchorIndex]
+    this.clearSelection()
+    for (let i = start; i <= end; i++) {
+      orderedFiles[i].selected = true
+    }
+  }
+
+  toggleFileSelection = (tfile: TFile) => {
+    const file = this.value.find((row: File) => row.tfile.path === tfile.path)
+    if (!file) return
+    file.selected = !file.selected
+    this.lastInteractedPath = tfile.path
+  }
+
+  setFilesPinnedState = (tfiles: TFile[], pinned: boolean) => {
+    tfiles.forEach((tfile: TFile) => {
+      const file = this.value.find((row: File) => row.tfile.path === tfile.path)
+      if (!file || file.pinned === pinned) return
+      this.handleFilePinnedToggle(tfile)
+    })
   }
   
   handleFileUpdate = (tfile: TAbstractFile) => {

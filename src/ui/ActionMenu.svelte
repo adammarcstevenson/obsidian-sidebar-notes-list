@@ -69,17 +69,13 @@
       }
     },
     {
-      ariaLabel: 'Refresh',
+      ariaLabel: l10n('refreshLabel') as string,
       iconId: 'refresh-cw',
       onClickHandler: () => {
         state.files.loadFiles()
-      },
-      showOnlyInDebugMode: true
+      }
     }
-  ].filter(item => {
-     const isDebugMode = localStorage.getItem('sidebar-notes-list-debug') === 'true'
-    return isDebugMode || !item.showOnlyInDebugMode
-  })
+  ]
 </script>
 
 <div

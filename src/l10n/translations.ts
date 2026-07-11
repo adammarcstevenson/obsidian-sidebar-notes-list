@@ -11,11 +11,15 @@ export const enUS: {
   changeSortOrderLabel: 'Change sort order',
   sortOptionCreated: 'Created (newest to oldest)',
   sortOptionLastModified: 'Last modified (newest to oldest)',
+  refreshLabel: 'Refresh',
 
   // File row context menu
   contextMenuPinFile: 'Pin file',
   contextMenuRemoveFilePin: 'Unpin file',
   contextMenuTrashFile: 'Move to trash',
+  contextMenuPinFiles: 'Pin files',
+  contextMenuRemoveFilePins: 'Unpin files',
+  contextMenuTrashFiles: 'Move {count} files to trash',
 
   // Settings page
   settingAdvancedHeading: 'Advanced',
@@ -70,11 +74,15 @@ export const fr: typeof enUS = {
   changeSortOrderLabel: 'Modifier l\'ordre de tri',
   sortOptionCreated: 'Date de création (du plus récent au plus ancien)',
   sortOptionLastModified: 'Date de modification (du plus récent au plus ancien)',
+  refreshLabel: 'Actualiser',
 
   // File row context menu
   contextMenuPinFile: 'Épingler le fichier',
   contextMenuRemoveFilePin: 'Désépingler le fichier',
   contextMenuTrashFile: 'Déplacer vers la corbeille',
+  contextMenuPinFiles: 'Épingler les fichiers',
+  contextMenuRemoveFilePins: 'Désépingler les fichiers',
+  contextMenuTrashFiles: 'Déplacer {count} fichiers vers la corbeille',
 
   // Settings page
   settingAdvancedHeading: 'Avancé',
